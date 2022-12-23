@@ -1,13 +1,20 @@
+import { BullModule } from '@nestjs/bull';
 import { DynamicModule, Global, Module, Provider } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { SMTPDriver } from './drivers/smtp.driver';
+import { MailerConsumer } from './mailer.consumer';
 import { MailConfig, MailDriverContract } from './mailer.interface';
 import { MailerService } from './mailer.service';
 
 @Global()
 @Module({
-  providers: [],
+  providers: [MailerConsumer],
   exports: [],
+  imports: [
+    BullModule.registerQueue({
+      name: 'mail',
+    }),
+  ],
 })
 export class MailerModule {
   private static getOptionToken(mailer: string, driver: string): string {

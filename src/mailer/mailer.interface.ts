@@ -66,7 +66,21 @@ export abstract class Mailable {
  */
 export type MessageContentViewsNode = {
   html?: {
-    template: string;
+    template: any;
     data?: any;
   };
 };
+
+/**
+ * Shape of the compiled mail.
+ */
+export type CompiledMailNode = {
+  message: MessageNode;
+  views: MessageContentViewsNode;
+  config?: any;
+  disableRender?: boolean;
+};
+
+export interface MailerJobData {
+  compiledMessage: CompiledMailNode;
+}
