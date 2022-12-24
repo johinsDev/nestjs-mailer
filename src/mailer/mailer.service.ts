@@ -18,7 +18,7 @@ import { Message } from './message';
 // TODO: Add support for multiple drivers SES,mailgun,fake
 // TODO: Add support for multiple queues
 // TODO: Attachments, to, cc, bcc
-// TODO later: time to send, Mailable
+// TODO: preview, getEtherealAccount
 
 @Injectable()
 export class MailerService {
@@ -27,7 +27,9 @@ export class MailerService {
     private readonly drivers: Map<string, MailDriverContract>,
     @InjectQueue('mail') private mailerQueue: Queue,
     private eventEmitter: EventEmitter2,
-  ) {}
+  ) {
+    Mailable.mailer = this;
+  }
 
   use(driver?: string) {
     if (!this.drivers.has(driver || 'default')) {

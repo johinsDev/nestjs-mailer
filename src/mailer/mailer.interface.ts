@@ -1,5 +1,8 @@
+import { Logger } from '@nestjs/common';
+import { DateTime } from 'luxon';
 import Mail from 'nodemailer/lib/mailer';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
+import { MailerService } from './mailer.service';
 import { Message } from './message';
 
 export type MessageNode = Mail.Options;
@@ -56,8 +59,29 @@ export type MailConfig = {
 export type MessageComposeCallback = (message: Message) => void | Promise<void>;
 
 export abstract class Mailable {
-  build(message: Message) {
-    throw new Error('Method not implemented');
+  private readonly logger = new Logger(Mailable.name);
+
+  static mailer: MailerService;
+
+  public mailer = (this.constructor as typeof Mailable).mailer;
+
+  /**
+   * Prepare mail message
+   */
+  public abstract build(message: Message): Promise<any> | any;
+
+  send() {
+    this.logger.debug('Send email');
+    return this.mailer.send(async (message) => {
+      this.logger.debug('Preparing mail message');
+      await this.build(message);
+    });
+  }
+
+  later(delay: DateTime) {
+    return this.mailer.later(delay, async (message) => {
+      await this.build(message);
+    });
   }
 }
 

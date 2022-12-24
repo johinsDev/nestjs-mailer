@@ -14,12 +14,17 @@ export class AppController {
     // await this.mailer.send((message) => {
     //   message.to('johinsdev@gmail.com').html('Hello World').subject('Hello');
     // });
+    new WelcomeEmail('johinsdev@gmail.com', 'John').send();
 
-    await this.mailer.later(
+    return new WelcomeEmail('johinsdev@gmail.com', 'John').later(
       DateTime.local().plus({ seconds: 10 }),
-      new WelcomeEmail('johinsdev@gmail.com', 'John'),
     );
 
-    await this.mailer.queue(new WelcomeEmail('johinsdev@gmail.com', 'John'));
+    // await this.mailer.later(
+    //   DateTime.local().plus({ seconds: 10 }),
+    //   new WelcomeEmail('johinsdev@gmail.com', 'John'),
+    // );
+
+    // await this.mailer.queue(new WelcomeEmail('johinsdev@gmail.com', 'John'));
   }
 }

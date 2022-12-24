@@ -4,6 +4,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MailerModule } from './mailer/mailer.module';
+import { StorageModule } from './storage/storage.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { MailerModule } from './mailer/mailer.module';
         },
       },
     }),
+    StorageModule,
   ],
   controllers: [AppController],
   providers: [AppService],
