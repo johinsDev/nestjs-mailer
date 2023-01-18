@@ -1,13 +1,16 @@
 import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import mainConfig from './config/main.config';
 import { MailerModule } from './mailer/mailer.module';
 import { StorageModule } from './storage/storage.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true, load: [mainConfig] }),
     EventEmitterModule.forRoot(),
     BullModule.forRoot({
       redis: {

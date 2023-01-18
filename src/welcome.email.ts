@@ -1,4 +1,4 @@
-import Email from 'emails';
+// import Email from 'emails';
 import { Mailable } from './mailer/mailer.interface';
 import { Message } from './mailer/message';
 
@@ -13,6 +13,9 @@ export class WelcomeEmail extends Mailable {
       .to(this.email)
       .subject('Welcome')
       .html(`Hello ${this.name}`)
-      .content(Email());
+      .htmlView('welcome', {
+        name: this.name,
+      });
+    // .content(Email());
   }
 }

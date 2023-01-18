@@ -77,7 +77,7 @@ export class Message {
   /**
    * Compute email html from defined view
    */
-  public content(template: any, data?: any): this {
+  public htmlView(template: string, data?: any): this {
     this.contentViews.html = { template, data };
     return this;
   }

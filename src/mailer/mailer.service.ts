@@ -1,9 +1,11 @@
 import { InjectQueue } from '@nestjs/bull';
 import { Inject, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { render } from '@react-email/render';
 import Bull, { JobOptions, Queue } from 'bull';
 import { DateTime } from 'luxon';
+import { render } from 'mailing-core';
+import path from 'path';
 
 import {
   CompiledMailNode,
@@ -27,6 +29,7 @@ export class MailerService {
     private readonly drivers: Map<string, MailDriverContract>,
     @InjectQueue('mail') private mailerQueue: Queue,
     private eventEmitter: EventEmitter2,
+    private readonly config: ConfigService,
   ) {
     Mailable.mailer = this;
   }
@@ -39,8 +42,22 @@ export class MailerService {
     return this.drivers.get(driver || 'default');
   }
 
-  compile(views: MessageContentViewsNode) {
-    return render(views.html?.template);
+  async compile(views: MessageContentViewsNode) {
+    const emailPath = path.join(
+      this.config.get('main.rootDir'),
+      '../emails',
+      views.html.template,
+    );
+
+    const email = (await import(emailPath)).default;
+
+    const { errors, html } = render(email(views.html.data || {}));
+
+    if (errors.length) {
+      throw new Error(errors.join(','));
+    }
+
+    return html;
   }
 
   private async prepareMessage(
@@ -73,7 +90,7 @@ export class MailerService {
 
   private async setEmailContent({ message, views }: CompiledMailNode) {
     if (views.html) {
-      message.html = this.compile(views);
+      message.html = await this.compile(views);
     }
   }
 

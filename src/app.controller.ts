@@ -14,7 +14,7 @@ export class AppController {
     // await this.mailer.send((message) => {
     //   message.to('johinsdev@gmail.com').html('Hello World').subject('Hello');
     // });
-    new WelcomeEmail('johinsdev@gmail.com', 'John').send();
+    // new WelcomeEmail('johinsdev@gmail.com', 'John').send();
 
     return new WelcomeEmail('johinsdev@gmail.com', 'John').later(
       DateTime.local().plus({ seconds: 10 }),

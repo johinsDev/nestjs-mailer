@@ -90,7 +90,7 @@ export abstract class Mailable {
  */
 export type MessageContentViewsNode = {
   html?: {
-    template: any;
+    template: string;
     data?: any;
   };
 };
